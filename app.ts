@@ -1,6 +1,6 @@
 import * as cdk from "@aws-cdk/core";
-import ReclaimersStack from "./src/stack";
+import MainStack from "./src/stacks/main";
 
 const app = new cdk.App();
-new ReclaimersStack(app, "ReclaimersStack");
+new MainStack(app, "ReclaimersStack");
 app.synth();

@@ -27,12 +27,12 @@ export class DnsStack extends cdk.Stack {
       {priority: 10, hostName: "in1-smtp.messagingengine.com.",},
       {priority: 20, hostName: "in2-smtp.messagingengine.com."},
     ];
-    new r53.MxRecord(this, "DnsFastmailMxA", {
+    new r53.MxRecord(this, "FastmailMxA", {
       ...baseDnsProps,
       values: fastmailMxRecordValues,
       recordName: "reclaimers.net",
     });
-    new r53.MxRecord(this, "DnsFastmailMxB", {
+    new r53.MxRecord(this, "FastmailMxB", {
       ...baseDnsProps,
       values: fastmailMxRecordValues,
       recordName: "*.reclaimers.net",
@@ -44,7 +44,7 @@ export class DnsStack extends cdk.Stack {
         domainName: `fm${serverNum}.reclaimers.net.dkim.fmhosted.com`,
       });
     });
-    new r53.TxtRecord(this, "DnsFastmailTxt", {
+    new r53.TxtRecord(this, "FastmailTxt", {
       ...baseDnsProps,
       recordName: "reclaimers.net",
       values: ["v=spf1 include:spf.messagingengine.com ?all"],
@@ -56,8 +56,8 @@ export class DnsStack extends cdk.Stack {
       recordName: "c20.reclaimers.net",
       target: r53.RecordTarget.fromAlias(new r53t.CloudFrontTarget(props.wikiCdn)),
     };
-    new r53.ARecord(this, "DnsWikiIpv4", dnsWikiProps);
-    new r53.AaaaRecord(this, "DnsWikiIpv6", dnsWikiProps);
+    new r53.ARecord(this, "WikiIpv4", dnsWikiProps);
+    new r53.AaaaRecord(this, "WikiIpv6", dnsWikiProps);
 
     //DNS records for the main domain, currently pointing to the wiki
     const dnsMainProps = {
@@ -65,11 +65,11 @@ export class DnsStack extends cdk.Stack {
       recordName: "reclaimers.net",
       target: r53.RecordTarget.fromAlias(new r53t.CloudFrontTarget(props.wikiCdn)),
     };
-    new r53.ARecord(this, "DnsMainIpv4", dnsMainProps);
-    new r53.AaaaRecord(this, "DnsMainIpv6", dnsMainProps);
+    new r53.ARecord(this, "MainIpv4", dnsMainProps);
+    new r53.AaaaRecord(this, "MainIpv6", dnsMainProps);
 
     //easy subdomain for gamenights
-    new r53.ARecord(this, "DnsMainIpv4", {
+    new r53.ARecord(this, "PlayIpv4", {
       ...baseDnsProps,
       recordName: "play.reclaimers.net",
       target: r53.RecordTarget.fromIpAddresses(GAMENIGHT_SERVER_IPV4)
@@ -81,7 +81,7 @@ export class DnsStack extends cdk.Stack {
       recordName: "discord.reclaimers.net",
       target: r53.RecordTarget.fromAlias(new r53t.ApiGateway(props.discordRedirectApi)),
     };
-    new r53.ARecord(this, "DnsMainIpv4", discordRedirectProps);
-    new r53.AaaaRecord(this, "DnsMainIpv6", discordRedirectProps);
+    new r53.ARecord(this, "DiscordIpv4", discordRedirectProps);
+    new r53.AaaaRecord(this, "DiscordIpv6", discordRedirectProps);
   }
 }

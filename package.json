@@ -4,6 +4,7 @@
   "description": "AWS infrastructure for the reclaimers.net domain",
   "private": true,
   "dependencies": {
+    "@aws-cdk/aws-apigateway": "^1.60.0",
     "@aws-cdk/aws-certificatemanager": "^1.59.0",
     "@aws-cdk/aws-cloudfront": "^1.59.0",
     "@aws-cdk/aws-cloudfront-origins": "^1.59.0",

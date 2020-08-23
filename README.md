@@ -1,5 +1,5 @@
 # reclaimers.net AWS infrastructure
-This [CDK project][cdk] implements the hosting infrastructure and resources necessary to run the [reclaimers.net](https://reclaimers.net) website and associated services. This codebase is still a WIP, since the manually-created resources are being ported into it from the previous account.
+This [CDK project][cdk] implements the hosting infrastructure and resources necessary to run the [reclaimers.net](https://reclaimers.net) website and associated services.
 
 ## Initial account setup
 This infrastructure is mainly account-agnostic and automatic, but assumes the AWS account has been prepared:

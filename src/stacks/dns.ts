@@ -71,10 +71,14 @@ export class DnsStack extends cdk.Stack {
     const dnsWikiProps = {
       ...baseDnsProps,
       target: r53.RecordTarget.fromAlias(new r53t.CloudFrontTarget(props.wikiCdn)),
-      recordName: "test.reclaimers.net",
+      recordName: "c20.reclaimers.net",
     };
     new r53.ARecord(this, "WikiIpv4", dnsWikiProps);
     new r53.AaaaRecord(this, "WikiIpv6", dnsWikiProps);
+    new r53.ARecord(this, "TestIpv4", {
+      ...dnsWikiProps,
+      recordName: "test.reclaimers.net",
+    });
 
     //DNS records for the main domain, currently pointing to the wiki
     new r53.ARecord(this, "MainIpv4", {

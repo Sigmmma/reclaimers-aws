@@ -20,7 +20,7 @@ export class DomainStack extends cdk.Stack {
       domainName: "reclaimers.net",
       //on receiving our cert, clients verify the domain they requested is part of this signed set
       subjectAlternativeNames: ["reclaimers.net", "*.reclaimers.net"],
-      //ACM requires us to verify that we own the domain -- easy since it's provisioned above
+      //ACM requires us to verify that we own the domain -- do this in the ACM dashboard the first time
       validation: acm.CertificateValidation.fromDns(this.dnsZone)
     });
   }

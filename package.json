@@ -19,11 +19,11 @@
     "typescript": "^3.9.7"
   },
   "scripts": {
-    "build": "tsc",
-    "watch": "tsc -w",
-    "synth": "tsc && cdk synth",
-    "diff": "tsc && cdk diff || true",
-    "deploy": "tsc && cdk deploy '*'"
+    "build": "tsc --outDir target",
+    "watch": "tsc -w --outDir target",
+    "synth": "tsc --outDir target && cdk synth",
+    "diff": "tsc --outDir target && cdk diff || true",
+    "deploy": "tsc --outDir target && cdk deploy '*'"
   },
   "author": "csauve",
   "license": "GPL-3.0-or-later"

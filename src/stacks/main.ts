@@ -8,7 +8,7 @@ export default class MainStack extends cdk.Stack {
   constructor(app: cdk.App, id: string) {
     super(app, id);
 
-    const domainStack = new DomainStack(app, "Domain");
+    const domainStack = new DomainStack(app, "Domain2");
     const wikiStack = new WikiStack(app, "Wiki", domainStack.cert);
     const discordStack = new DiscordRedirectStack(app, "DiscordRedirect", domainStack.cert);
 

@@ -22,6 +22,7 @@ export class WikiStack extends cdk.Stack {
       //serve from NA+Europe (cheapest)
       priceClass: cf.PriceClass.PRICE_CLASS_100,
       defaultBehavior: {
+        viewerProtocolPolicy: cf.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         origin: new cfo.S3Origin(wikiBucket.bucket)
       }
     });

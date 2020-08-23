@@ -1,8 +1,10 @@
 # reclaimers.net AWS infrastructure
-This [CDK project][cdk] implements the hosting infrastructure necessary to run the [reclaimers.net](https://reclaimers.net) website and associated services. This codebase is still a WIP, since the manually-created resources are being ported into
+This [CDK project][cdk] implements the hosting infrastructure necessary to run the [reclaimers.net](https://reclaimers.net) website and associated services. This codebase is still a WIP, since the manually-created resources are being ported into it from the previous account.
+
+This infrastructure is mainly account-agnostic, but assumes the account owns the **reclaimers.net** domain.
 
 # Usage
-This infrastructure is mainly account-agnostic, but assumes the account owns the **reclaimers.net** domain. To authenticate, some [environment variables][env] must be set:
+To authenticate, some [environment variables][env] must be set:
 
 ```sh
 export AWS_REGION=us-east-1

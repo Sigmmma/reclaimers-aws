@@ -1,9 +1,16 @@
 # reclaimers.net AWS infrastructure
 This [CDK project][cdk] implements the hosting infrastructure and resources necessary to run the [reclaimers.net](https://reclaimers.net) website and associated services. This codebase is still a WIP, since the manually-created resources are being ported into it from the previous account.
 
-This infrastructure is mainly account-agnostic, but assumes the account owns the **reclaimers.net** domain.
+## Initial account setup
+This infrastructure is mainly account-agnostic and automatic, but assumes the AWS account has been prepared:
+
+* An admin has already connected AWS to GitHub using OAuth via the CodeBuild project wizard -- this allows AWS to create webhooks in the necessary repos.
+* The account owns the **reclaimers.net** domain.
+* CDK will create a second Route 53 hosted zone for the reclaimers.net domain. Transfer the NS and SOA records from the original to the new one, then delete the original.
 
 Account admins should avoid modifying resources directly in the AWS dashboard, aside from trivial temporary changes. Defining resources in this project is preferable because it makes the setup more repeatable, auditable, and clearly organized.
+
+Non-trivial implementations and service code should generally stay outside this project -- e.g. this is not the place to write the backend code for an API. We prefer to keep such projects platform-agnostic and easy to develop locally, with CDK only used for any infrastructure which must be AWS-specific.
 
 # Usage
 Deployments happen from the developer's local system. You must be authenticated with the AWS account in order to deploy. This is done by setting some [environment variables][env]:

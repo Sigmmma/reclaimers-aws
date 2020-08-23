@@ -21,6 +21,10 @@ export class DiscordRedirectStack extends cdk.Stack {
     `);
 
     this.apiGateway = new apigw.LambdaRestApi(this, "Api", {
+      domainName: {
+        domainName: "discord.reclaimers.net",
+        certificate: cert,
+      },
       restApiName: "discord-redirect",
       handler: discordRedirectLambda.func
     });

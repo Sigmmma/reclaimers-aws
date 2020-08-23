@@ -70,22 +70,29 @@ export class DnsStack extends cdk.Stack {
     //DNS records for the wiki
     const dnsWikiProps = {
       ...baseDnsProps,
-      recordName: "test.reclaimers.net",
       target: r53.RecordTarget.fromAlias(new r53t.CloudFrontTarget(props.wikiCdn)),
+      recordName: "test.reclaimers.net",
     };
     new r53.ARecord(this, "WikiIpv4", dnsWikiProps);
     new r53.AaaaRecord(this, "WikiIpv6", dnsWikiProps);
 
     //DNS records for the main domain, currently pointing to the wiki
-    // const dnsMainProps = {
-    //   ...baseDnsProps,
-    //   recordName: "reclaimers.net",
-    //   target: r53.RecordTarget.fromAlias(new r53t.CloudFrontTarget(props.wikiCdn)),
-    // };
-    // new r53.ARecord(this, "MainIpv4", dnsMainProps);
-    // new r53.AaaaRecord(this, "MainIpv6", dnsMainProps);
-
-    //todo: www.
+    new r53.ARecord(this, "MainIpv4", {
+      ...dnsWikiProps,
+      recordName: "reclaimers.net",
+    });
+    new r53.AaaaRecord(this, "MainIpv6", {
+      ...dnsWikiProps,
+      recordName: "reclaimers.net",
+    });
+    new r53.ARecord(this, "WwwIpv4", {
+      ...dnsWikiProps,
+      recordName: "www.reclaimers.net",
+    });
+    new r53.AaaaRecord(this, "WwwIpv6", {
+      ...dnsWikiProps,
+      recordName: "www.reclaimers.net",
+    });
 
     //easy subdomain for gamenights
     new r53.ARecord(this, "PlayIpv4", {
@@ -94,40 +101,13 @@ export class DnsStack extends cdk.Stack {
       target: r53.RecordTarget.fromIpAddresses(GAMENIGHT_SERVER_IPV4)
     });
 
-    //easy subdomain for discord invites
-    // const discordRedirectProps = {
-    //   ...baseDnsProps,
-    //   recordName: "discord.reclaimers.net",
-    //   target: r53.RecordTarget.fromAlias(new r53t.ApiGateway(props.discordRedirectApi)),
-    // };
-    // new r53.ARecord(this, "DiscordIpv4", discordRedirectProps);
-    // new r53.AaaaRecord(this, "DiscordIpv6", discordRedirectProps);
-
-    //legacy account records -- to be removed after finishing and testing this account's services
-    new r53.ARecord(this, "LegacyDiscordIpv4", {
+    // easy subdomain for discord invites
+    const discordRedirectProps = {
       ...baseDnsProps,
-      recordName: "disord.reclaimers.net",
-      target: r53.RecordTarget.fromIpAddresses("13.224.8.101")
-    });
-    new r53.AaaaRecord(this, "LegacyDiscordIpv6", {
-      ...baseDnsProps,
-      recordName: "disord.reclaimers.net",
-      target: r53.RecordTarget.fromIpAddresses("2600:9000:2196:5a00:15:6834:c400:93a1")
-    });
-    new r53.ARecord(this, "LegacyWikiIpv4", {
-      ...baseDnsProps,
-      recordName: "c20.reclaimers.net",
-      target: r53.RecordTarget.fromIpAddresses("13.224.29.111")
-    });
-    new r53.ARecord(this, "LegacyWwwIpv4", {
-      ...baseDnsProps,
-      recordName: "www.reclaimers.net",
-      target: r53.RecordTarget.fromIpAddresses("13.224.29.111")
-    });
-    new r53.ARecord(this, "LegacyMainIpv4", {
-      ...baseDnsProps,
-      recordName: "reclaimers.net",
-      target: r53.RecordTarget.fromIpAddresses("13.224.29.111")
-    });
+      recordName: "discord.reclaimers.net",
+      target: r53.RecordTarget.fromAlias(new r53t.ApiGateway(props.discordRedirectApi)),
+    };
+    new r53.ARecord(this, "DiscordIpv4", discordRedirectProps);
+    new r53.AaaaRecord(this, "DiscordIpv6", discordRedirectProps);
   }
 }

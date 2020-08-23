@@ -2,6 +2,7 @@ import * as cdk from "@aws-cdk/core";
 import * as cfo from "@aws-cdk/aws-cloudfront-origins";
 import * as acm from "@aws-cdk/aws-certificatemanager";
 import * as cf from "@aws-cdk/aws-cloudfront";
+import * as cb from "@aws-cdk/aws-codebuild";
 import {BasicBucket} from "../constructs/bucket";
 
 export class WikiStack extends cdk.Stack {
@@ -15,6 +16,25 @@ export class WikiStack extends cdk.Stack {
       name: "reclaimers-wiki-files",
       public: true
     });
+
+    const build = new cb.Project(this, "Build", {
+      projectName: "wiki-build",
+      timeout: cdk.Duration.minutes(10),
+      description: "Automatically builds and deploys the wiki to S3",
+      source: cb.Source.gitHub({
+        owner: "Sigmmma",
+        repo: "c20",
+        cloneDepth: 1,
+        webhookFilters: [
+          cb.FilterGroup.inEventOf(cb.EventAction.PUSH).andHeadRefIs("refs/heads/master"),
+          cb.FilterGroup.inEventOf(cb.EventAction.PULL_REQUEST_MERGED).andHeadRefIs("refs/heads/master"),
+        ],
+      }),
+      badge: true,
+    });
+
+    //the wiki build needs permission to sync build output to our S3 bucket
+    wikiBucket.bucket.grantReadWrite(build);
 
     //this CDN distro fronts our wiki bucket to add cache + TLS layer
     this.cdn = new cf.Distribution(this, "Cdn", {

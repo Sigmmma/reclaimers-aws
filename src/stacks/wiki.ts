@@ -20,6 +20,10 @@ export class WikiStack extends cdk.Stack {
     const build = new cb.Project(this, "Build", {
       projectName: "wiki-build",
       timeout: cdk.Duration.minutes(10),
+      environment: {
+        buildImage: cb.LinuxBuildImage.AMAZON_LINUX_2_3,
+        computeType: cb.ComputeType.SMALL,
+      },
       description: "Automatically builds and deploys the wiki to S3",
       source: cb.Source.gitHub({
         owner: "Sigmmma",

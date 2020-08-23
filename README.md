@@ -10,7 +10,7 @@ This project fully automates infrastructure updates during normal usage, but ass
 
 * An admin has already connected AWS to GitHub using OAuth via the CodeBuild project wizard -- this allows AWS to create webhooks in the necessary repos.
 * The account owns the **reclaimers.net** domain.
-* CDK will create a second Route 53 hosted zone for the reclaimers.net domain. Transfer the NS and SOA records from the original to the new one, then delete the original.
+* While AWS creates a default hosted zone for the owned domain, CDK will create a second one with all the required DNS records for the reclaimers.net domain. Obtain the nameservers from this new zone's details section and update the registered domain's nameservers to match. Delete the unused default hosted zone once the confirmation email is received.
 
 ## Usage
 Deployments happen from the developer's local system. You must be authenticated with the AWS account in order to deploy. This is done by setting some [environment variables][env]:

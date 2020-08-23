@@ -43,6 +43,13 @@ export class WikiStack extends cdk.Stack {
     //this CDN distro fronts our wiki bucket to add cache + TLS layer
     this.cdn = new cf.Distribution(this, "Cdn", {
       certificate: cert,
+      //cloudfront will allow requests for these domains (CNAMES) in addition to its default
+      domainNames: [
+        "c20.reclaimers.net",
+        "www.reclaimers.net",
+        "test.reclaimers.net",
+        "reclaimers.net",
+      ],
       //serve from NA+Europe (cheapest)
       priceClass: cf.PriceClass.PRICE_CLASS_100,
       defaultBehavior: {

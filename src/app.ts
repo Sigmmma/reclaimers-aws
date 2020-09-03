@@ -1,5 +1,5 @@
 import * as cdk from "@aws-cdk/core";
-import MainStack from "./src/stacks/main";
+import MainStack from "./stacks/main";
 
 const app = new cdk.App();
 new MainStack(app, "ReclaimersStack");

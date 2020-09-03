@@ -4,28 +4,28 @@
   "description": "AWS infrastructure for the reclaimers.net domain",
   "private": true,
   "dependencies": {
-    "@aws-cdk/aws-apigateway": "1.60.0",
-    "@aws-cdk/aws-certificatemanager": "1.60.0",
-    "@aws-cdk/aws-cloudfront": "1.60.0",
-    "@aws-cdk/aws-cloudfront-origins": "1.60.0",
-    "@aws-cdk/aws-codebuild": "1.60.0",
-    "@aws-cdk/aws-iam": "1.60.0",
-    "@aws-cdk/aws-route53": "1.60.0",
-    "@aws-cdk/aws-route53-targets": "1.60.0",
-    "@aws-cdk/aws-s3": "1.60.0",
-    "@aws-cdk/core": "1.60.0"
+    "@aws-cdk/aws-apigateway": "1.61.1",
+    "@aws-cdk/aws-certificatemanager": "1.61.1",
+    "@aws-cdk/aws-cloudfront": "1.61.1",
+    "@aws-cdk/aws-cloudfront-origins": "1.61.1",
+    "@aws-cdk/aws-codebuild": "1.61.1",
+    "@aws-cdk/aws-iam": "1.61.1",
+    "@aws-cdk/aws-route53": "1.61.1",
+    "@aws-cdk/aws-route53-targets": "1.61.1",
+    "@aws-cdk/aws-s3": "1.61.1",
+    "@aws-cdk/core": "1.61.1"
   },
   "devDependencies": {
     "@types/node": "^14.6.0",
-    "aws-cdk": "1.60.0",
+    "aws-cdk": "1.61.1",
     "typescript": "^3.9.7"
   },
   "scripts": {
-    "build": "tsc --outDir target",
-    "watch": "tsc -w --outDir target",
-    "synth": "tsc --outDir target && cdk synth",
-    "diff": "tsc --outDir target && cdk diff || true",
-    "deploy": "tsc --outDir target && cdk deploy '*'"
+    "build": "tsc -p src --outDir target",
+    "watch": "tsc -w -p src --outDir target",
+    "synth": "tsc -p src --outDir target && cdk synth",
+    "diff": "tsc -p src --outDir target && cdk diff || true",
+    "deploy": "tsc -p src --outDir target && cdk deploy '*'"
   },
   "author": "csauve",
   "license": "GPL-3.0-or-later"

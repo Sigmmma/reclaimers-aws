@@ -10,6 +10,7 @@ const GAMENIGHT_SERVER_IPV4 = "108.61.232.93";
 export interface DnsStackProps {
   dnsZone: r53.PublicHostedZone;
   wikiCdn: cf.Distribution;
+  filesCdn: cf.Distribution;
   discordRedirectApi: apigw.RestApi;
 }
 
@@ -75,10 +76,15 @@ export class DnsStack extends cdk.Stack {
     };
     new r53.ARecord(this, "WikiIpv4", dnsWikiProps);
     new r53.AaaaRecord(this, "WikiIpv6", dnsWikiProps);
-    new r53.ARecord(this, "TestIpv4", {
-      ...dnsWikiProps,
-      recordName: "test.reclaimers.net",
-    });
+
+    //public shared files domain
+    const dnsFilesProps = {
+      ...baseDnsProps,
+      target: r53.RecordTarget.fromAlias(new r53t.CloudFrontTarget(props.filesCdn)),
+      recordName: "files.reclaimers.net",
+    };
+    new r53.ARecord(this, "FilesIpv4", dnsFilesProps);
+    new r53.AaaaRecord(this, "FilesIpv6", dnsFilesProps);
 
     //DNS records for the main domain, currently pointing to the wiki
     new r53.ARecord(this, "MainIpv4", {

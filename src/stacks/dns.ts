@@ -5,9 +5,7 @@ import * as cf from "@aws-cdk/aws-cloudfront";
 import * as apigw from "@aws-cdk/aws-apigateway";
 
 //SlowBullet's CE3/Reclaimers server
-const GAMENIGHT_SERVER_IPV4 = "108.61.232.93";
-//pseudo's server
-const GAMENIGHT_SERVER_ALT_IPV4 = "74.208.30.180";
+const GAMENIGHT_SERVER_IPV4 = "104.192.227.243";
 
 export interface DnsStackProps {
   dnsZone: r53.PublicHostedZone;
@@ -109,13 +107,15 @@ export class DnsStack extends cdk.Stack {
     //easy subdomains for gamenights
     new r53.ARecord(this, "PlayIpv4", {
       ...baseDnsProps,
+      ttl: cdk.Duration.minutes(15),
       recordName: "play.reclaimers.net",
       target: r53.RecordTarget.fromIpAddresses(GAMENIGHT_SERVER_IPV4)
     });
     new r53.ARecord(this, "Play2Ipv4", {
       ...baseDnsProps,
-      recordName: "play2.reclaimers.net",
-      target: r53.RecordTarget.fromIpAddresses(GAMENIGHT_SERVER_ALT_IPV4)
+      ttl: cdk.Duration.minutes(15),
+      recordName: "gamenight.reclaimers.net",
+      target: r53.RecordTarget.fromIpAddresses(GAMENIGHT_SERVER_IPV4)
     });
 
     // easy subdomain for discord invites

@@ -4,6 +4,10 @@ import * as acm from "@aws-cdk/aws-certificatemanager";
 import * as cf from "@aws-cdk/aws-cloudfront";
 import {BasicBucket} from "../constructs/bucket";
 
+/* This is a simple public bucket where we can manually upload files using the
+ * web S3 console or AWS CLI tool. We can store anything we want to share
+ * publicly here, though there is no directory listing functionality.
+ */
 export class FilesStack extends cdk.Stack {
   readonly cdn: cf.Distribution;
 

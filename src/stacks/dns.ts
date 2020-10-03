@@ -14,6 +14,10 @@ export interface DnsStackProps {
   discordRedirectApi: apigw.RestApi;
 }
 
+/* Creates DNS entries within the reclaimers.net domain's hosted zone.
+ * This allows us to have @reclaimers.net emails, and various subdomains
+ * with services.
+ */
 export class DnsStack extends cdk.Stack {
   constructor(app: cdk.App, id: string, props: DnsStackProps) {
     super(app, id);

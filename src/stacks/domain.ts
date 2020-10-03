@@ -2,6 +2,9 @@ import * as cdk from "@aws-cdk/core";
 import * as acm from "@aws-cdk/aws-certificatemanager";
 import * as r53 from "@aws-cdk/aws-route53";
 
+/* Creates a hosted DNS zone for the reclaimers.net domain (which the account
+ * must already own) and generates an SSL certificate that our services can use.
+ */
 export class DomainStack extends cdk.Stack {
   readonly dnsZone: r53.PublicHostedZone;
   readonly cert: acm.Certificate;

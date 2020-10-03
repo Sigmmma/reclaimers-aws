@@ -1,7 +1,9 @@
 import * as cdk from "@aws-cdk/core";
 import * as lambda from "@aws-cdk/aws-lambda";
 
-//supports up to 4 KB of source code inline
+/* Abstraction over a Lambda for up to 4 KB of inline JS source code.
+ * Use this for lightweight event processors and request handlers.
+ */
 export class InlineNodeLambda extends cdk.Construct {
   readonly func: lambda.Function;
 

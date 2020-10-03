@@ -6,6 +6,9 @@ export interface BasicBucketProps {
   readonly public?: boolean;
 }
 
+/* This is an abstraction over and S3 bucket which requires less boilerplate
+ * to create. Comes in either public or private types.
+ */
 export class BasicBucket extends cdk.Construct {
   readonly bucket: s3.Bucket;
 

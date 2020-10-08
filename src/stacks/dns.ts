@@ -19,8 +19,8 @@ export interface DnsStackProps {
  * with services.
  */
 export class DnsStack extends cdk.Stack {
-  constructor(app: cdk.App, id: string, props: DnsStackProps) {
-    super(app, id);
+  constructor(app: cdk.App, id: string, props: DnsStackProps, stackProps: cdk.StackProps) {
+    super(app, id, stackProps);
 
     /* CDK seems to have a bug in it where if you just reference a
      * cloudfront distribution from another stack rather than define it in

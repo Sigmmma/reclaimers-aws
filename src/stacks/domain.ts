@@ -9,8 +9,8 @@ export class DomainStack extends cdk.Stack {
   readonly dnsZone: r53.PublicHostedZone;
   readonly cert: acm.Certificate;
 
-  constructor(app: cdk.App, id: string) {
-    super(app, id);
+  constructor(app: cdk.App, id: string, stackProps: cdk.StackProps) {
+    super(app, id, stackProps);
 
     this.dnsZone = new r53.PublicHostedZone(this, "ReclaimersZone", {
       zoneName: "reclaimers.net",

@@ -10,8 +10,8 @@ import {InlineNodeLambda} from "../constructs/lambda";
 export class DiscordRedirectStack extends cdk.Stack {
   readonly apiGateway: apigw.RestApi;
 
-  constructor(app: cdk.App, id: string, cert: acm.Certificate) {
-    super(app, id);
+  constructor(app: cdk.App, id: string, cert: acm.Certificate, stackProps: cdk.StackProps) {
+    super(app, id, stackProps);
 
     const discordRedirectLambda = new InlineNodeLambda(this, "Lambda", `
       exports.handler = async (event) => {

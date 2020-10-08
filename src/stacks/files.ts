@@ -11,8 +11,8 @@ import {BasicBucket} from "../constructs/bucket";
 export class FilesStack extends cdk.Stack {
   readonly cdn: cf.Distribution;
 
-  constructor(app: cdk.App, id: string, cert: acm.Certificate) {
-    super(app, id);
+  constructor(app: cdk.App, id: string, cert: acm.Certificate, stackProps: cdk.StackProps) {
+    super(app, id, stackProps);
 
     const filesBucket = new BasicBucket(this, "Bucket", {
       name: "reclaimers-public-files",

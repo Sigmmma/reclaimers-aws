@@ -3,6 +3,7 @@ import * as events from "@aws-cdk/aws-events";
 import * as eventsTargets from "@aws-cdk/aws-events-targets";
 import * as dynamo from "@aws-cdk/aws-dynamodb";
 import * as ecs from "@aws-cdk/aws-ecs";
+import * as ec2 from "@aws-cdk/aws-ec2";
 import * as ecr from "@aws-cdk/aws-ecr";
 import * as iam from "@aws-cdk/aws-iam";
 import * as cb from "@aws-cdk/aws-codebuild";
@@ -15,8 +16,8 @@ const IMAGE_TAG = "latest";
  * on RSS feeds.
  */
 export class NewsStack extends cdk.Stack {
-  constructor(app: cdk.App, id: string, cluster: ecs.Cluster) {
-    super(app, id);
+  constructor(app: cdk.App, id: string, cluster: ecs.Cluster, stackProps: cdk.StackProps) {
+    super(app, id, stackProps);
 
     //we need a table to store which RSS items have been sent to Discord already
     const newsSentTable = new dynamo.Table(this, "NewsSentMessages", {
@@ -62,6 +63,9 @@ export class NewsStack extends cdk.Stack {
       targets: [
         new eventsTargets.EcsTask({
           cluster,
+          subnetSelection: {
+            subnetType: ec2.SubnetType.PUBLIC
+          },
           taskDefinition: newsTaskDef
         })
       ]

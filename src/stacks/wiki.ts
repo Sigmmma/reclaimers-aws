@@ -10,8 +10,8 @@ import {BasicBucket} from "../constructs/bucket";
 export class WikiStack extends cdk.Stack {
   readonly cdn: cf.Distribution;
 
-  constructor(app: cdk.App, id: string, cert: acm.Certificate) {
-    super(app, id);
+  constructor(app: cdk.App, id: string, cert: acm.Certificate, stackProps: cdk.StackProps) {
+    super(app, id, stackProps);
 
     //this S3 bucket stores the built version of the wiki
     const wikiBucket = new BasicBucket(this, "Bucket", {

@@ -5,7 +5,7 @@ import * as cf from "@aws-cdk/aws-cloudfront";
 import * as apigw from "@aws-cdk/aws-apigateway";
 
 //SlowBullet's CE3/Reclaimers server
-const GAMENIGHT_SERVER_IPV4 = "104.192.227.243";
+const GAMENIGHT_SERVER_IPV4 = "18.216.124.132";
 
 export interface DnsStackProps {
   dnsZone: r53.PublicHostedZone;

@@ -4,8 +4,15 @@ import * as r53t from "@aws-cdk/aws-route53-targets";
 import * as cf from "@aws-cdk/aws-cloudfront";
 import * as apigw from "@aws-cdk/aws-apigateway";
 
-//SlowBullet's CE3/Reclaimers server
-const GAMENIGHT_SERVER_IPV4 = "18.216.124.132";
+const GAMENIGHT_SERVERS = {
+  //SlowBullet's CE3/Reclaimers server
+  "play.reclaimers.net": "18.216.124.132", //2302
+  //killzone's server
+  "play2.reclaimers.net": "3.231.199.106", //2305
+  //þsϵυdø.þrø×϶n's servers:
+  "play3.reclaimers.net": "70.35.197.81", //2302 (FFA)
+  "play4.reclaimers.net": "70.35.197.81", //2304 (Team)
+};
 
 export interface DnsStackProps {
   dnsZone: r53.PublicHostedZone;
@@ -109,17 +116,13 @@ export class DnsStack extends cdk.Stack {
     });
 
     //easy subdomains for gamenights
-    new r53.ARecord(this, "PlayIpv4", {
-      ...baseDnsProps,
-      ttl: cdk.Duration.minutes(15),
-      recordName: "play.reclaimers.net",
-      target: r53.RecordTarget.fromIpAddresses(GAMENIGHT_SERVER_IPV4)
-    });
-    new r53.ARecord(this, "Play2Ipv4", {
-      ...baseDnsProps,
-      ttl: cdk.Duration.minutes(15),
-      recordName: "gamenight.reclaimers.net",
-      target: r53.RecordTarget.fromIpAddresses(GAMENIGHT_SERVER_IPV4)
+    Object.entries(GAMENIGHT_SERVERS).forEach(([name, ip]) => {
+      new r53.ARecord(this, `Gamenight-${name}-Ipv4`, {
+        ...baseDnsProps,
+        ttl: cdk.Duration.minutes(15),
+        recordName: name,
+        target: r53.RecordTarget.fromIpAddresses(ip)
+      });
     });
 
     // easy subdomain for discord invites

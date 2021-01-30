@@ -7,8 +7,8 @@ import * as apigw from "@aws-cdk/aws-apigateway";
 const GAMENIGHT_SERVERS = {
   //SlowBullet's CE3/Reclaimers server
   "play.reclaimers.net": "18.216.124.132", //2302
-  //killzone's server
-  "play2.reclaimers.net": "3.231.199.106", //2305
+  //killzone's "Reclaimers West"
+  "play2.reclaimers.net": "52.38.12.237", //2305
   //þsϵυdø.þrø×϶n's servers:
   "play3.reclaimers.net": "70.35.197.81", //2302 (FFA)
   "play4.reclaimers.net": "70.35.197.81", //2304 (Team)

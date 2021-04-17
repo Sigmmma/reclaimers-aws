@@ -5,6 +5,8 @@ import * as cf from "@aws-cdk/aws-cloudfront";
 import * as cb from "@aws-cdk/aws-codebuild";
 import {BasicBucket} from "../constructs/bucket";
 
+const CACHE_TTL_MINUTES = 120;
+
 /* Implements the c20 wiki website, including its automated build from source.
  */
 export class WikiStack extends cdk.Stack {
@@ -23,7 +25,7 @@ export class WikiStack extends cdk.Stack {
       projectName: "wiki-build",
       timeout: cdk.Duration.minutes(10),
       environment: {
-        buildImage: cb.LinuxBuildImage.AMAZON_LINUX_2_3,
+        buildImage: cb.LinuxBuildImage.STANDARD_5_0,
         computeType: cb.ComputeType.SMALL,
       },
       description: "Automatically builds and deploys the wiki to S3",
@@ -55,6 +57,10 @@ export class WikiStack extends cdk.Stack {
       //serve from NA+Europe (cheapest)
       priceClass: cf.PriceClass.PRICE_CLASS_100,
       defaultBehavior: {
+        cachePolicy: new cf.CachePolicy(this, "Cache", {
+          cachePolicyName: "c20-ttl-policy",
+          defaultTtl: cdk.Duration.minutes(CACHE_TTL_MINUTES)
+        }),
         viewerProtocolPolicy: cf.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         origin: new cfo.S3Origin(wikiBucket.bucket)
       }

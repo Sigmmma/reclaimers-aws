@@ -5,7 +5,7 @@ import * as cf from "@aws-cdk/aws-cloudfront";
 import * as cb from "@aws-cdk/aws-codebuild";
 import {BasicBucket} from "../constructs/bucket";
 
-const CACHE_TTL_MINUTES = 5;
+const CACHE_TTL_MINUTES = 120;
 
 /* Implements the c20 wiki website, including its automated build from source.
  */

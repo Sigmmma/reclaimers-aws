@@ -1,6 +1,7 @@
 import * as cdk from "@aws-cdk/core";
 import * as cfo from "@aws-cdk/aws-cloudfront-origins";
 import * as acm from "@aws-cdk/aws-certificatemanager";
+import * as iam from "@aws-cdk/aws-iam";
 import * as cf from "@aws-cdk/aws-cloudfront";
 import * as cb from "@aws-cdk/aws-codebuild";
 import {BasicBucket} from "../constructs/bucket";
@@ -18,7 +19,8 @@ export class WikiStack extends cdk.Stack {
     //this S3 bucket stores the built version of the wiki
     const wikiBucket = new BasicBucket(this, "Bucket", {
       name: "reclaimers-wiki-files",
-      public: true
+      public: true,
+      errDoc: "/404/index.html"
     });
 
     const build = new cb.Project(this, "Build", {
@@ -43,6 +45,11 @@ export class WikiStack extends cdk.Stack {
 
     //the wiki build needs permission to sync build output to our S3 bucket
     wikiBucket.bucket.grantReadWrite(build);
+    //and it needs to be able to use PutBucketWebsite to write redirects
+    build.role?.addToPrincipalPolicy(new iam.PolicyStatement({
+      actions: ["s3:PutBucketWebsite"],
+      resources: [wikiBucket.bucket.bucketArn],
+    }));
 
     //this CDN distro fronts our wiki bucket to add cache + TLS layer
     this.cdn = new cf.Distribution(this, "Cdn", {

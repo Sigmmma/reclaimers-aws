@@ -23,6 +23,12 @@ export class WikiStack extends cdk.Stack {
       errDoc: "/404/index.html"
     });
 
+    //cache for expensive build files (e.g. computationally, external bandwidth)
+    const buildCache = new BasicBucket(this, "BuildCache", {
+      name: "reclaimers-wiki-build-cache",
+      public: false,
+    });
+
     const build = new cb.Project(this, "Build", {
       projectName: "wiki-build",
       timeout: cdk.Duration.minutes(10),
@@ -31,6 +37,7 @@ export class WikiStack extends cdk.Stack {
         computeType: cb.ComputeType.SMALL,
       },
       description: "Automatically builds and deploys the wiki to S3",
+      cache: cb.Cache.bucket(buildCache.bucket),
       source: cb.Source.gitHub({
         owner: "Sigmmma",
         repo: "c20",
@@ -43,8 +50,9 @@ export class WikiStack extends cdk.Stack {
       badge: true,
     });
 
-    //the wiki build needs permission to sync build output to our S3 bucket
+    //the wiki build needs permission to sync build inputs and output to our S3 buckets
     wikiBucket.bucket.grantReadWrite(build);
+    buildCache.bucket.grantReadWrite(build);
     //and it needs to be able to use PutBucketWebsite to write redirects
     build.role?.addToPrincipalPolicy(new iam.PolicyStatement({
       actions: ["s3:PutBucketWebsite"],

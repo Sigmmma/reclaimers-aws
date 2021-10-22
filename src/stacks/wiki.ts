@@ -20,7 +20,7 @@ export class WikiStack extends cdk.Stack {
     const wikiBucket = new BasicBucket(this, "Bucket", {
       name: "reclaimers-wiki-files",
       public: true,
-      errDoc: "/404/index.html"
+      errDoc: "404/index.html"
     });
 
     //cache for expensive build files (e.g. computationally, external bandwidth)

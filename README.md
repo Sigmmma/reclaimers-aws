@@ -28,7 +28,9 @@ The values can be obtained from IAM in the AWS web console by creating a new use
 # install dependencies first
 npm ci
 
-# make code changes, then verify diff before deploying
+# build typescript files to JS, need to run whenever changes made
+npm run build
+# verify diff before deploying
 npm run diff
 # deploy infrastructure changes
 npm run deploy

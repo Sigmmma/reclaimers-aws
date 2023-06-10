@@ -1,12 +1,4 @@
-import * as cdk from "@aws-cdk/core";
-import * as events from "@aws-cdk/aws-events";
-import * as eventsTargets from "@aws-cdk/aws-events-targets";
-import * as dynamo from "@aws-cdk/aws-dynamodb";
-import * as ecs from "@aws-cdk/aws-ecs";
-import * as ec2 from "@aws-cdk/aws-ec2";
-import * as ecr from "@aws-cdk/aws-ecr";
-import * as iam from "@aws-cdk/aws-iam";
-import * as cb from "@aws-cdk/aws-codebuild";
+import { aws_codebuild as cb, aws_ecr as ecr, aws_ec2 as ec2, aws_ecs as ecs, aws_dynamodb as dynamo, aws_events_targets as eventsTargets, aws_events as events, Stack, Duration, RemovalPolicy, StackProps, App} from "aws-cdk-lib";
 
 const IMAGE_REPO_NAME = "reclaimers-news";
 const IMAGE_TAG = "latest";
@@ -15,8 +7,8 @@ const IMAGE_TAG = "latest";
  * when releases are posted on various community websites, based
  * on RSS feeds.
  */
-export class NewsStack extends cdk.Stack {
-  constructor(app: cdk.App, id: string, cluster: ecs.Cluster, stackProps: cdk.StackProps) {
+export class NewsStack extends Stack {
+  constructor(app: App, id: string, cluster: ecs.Cluster, stackProps: StackProps) {
     super(app, id, stackProps);
 
     //we need a table to store which RSS items have been sent to Discord already
@@ -31,13 +23,13 @@ export class NewsStack extends cdk.Stack {
         type: dynamo.AttributeType.STRING,
       },
       billingMode: dynamo.BillingMode.PAY_PER_REQUEST,
-      removalPolicy: cdk.RemovalPolicy.RETAIN,
+      removalPolicy: RemovalPolicy.RETAIN,
     });
 
     //we need a place to store the built container image
     const imageRepo = new ecr.Repository(this, "ImageRepo", {
       repositoryName: IMAGE_REPO_NAME,
-      removalPolicy: cdk.RemovalPolicy.DESTROY
+      removalPolicy: RemovalPolicy.DESTROY
     });
 
     //define the container which will run the news scan task
@@ -58,7 +50,7 @@ export class NewsStack extends cdk.Stack {
     new events.Rule(this, "Schedule", {
       ruleName: "news-schedule",
       description: "Determines how often we poll RSS for CE news",
-      schedule: events.Schedule.rate(cdk.Duration.hours(1)),
+      schedule: events.Schedule.rate(Duration.hours(1)),
       // eventPattern: {},
       targets: [
         new eventsTargets.EcsTask({
@@ -73,7 +65,7 @@ export class NewsStack extends cdk.Stack {
 
     const build = new cb.Project(this, "Build", {
       projectName: "news-build",
-      timeout: cdk.Duration.minutes(10),
+      timeout: Duration.minutes(10),
       environment: {
         buildImage: cb.LinuxBuildImage.AMAZON_LINUX_2_3,
         computeType: cb.ComputeType.SMALL,

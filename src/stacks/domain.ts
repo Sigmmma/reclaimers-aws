@@ -1,15 +1,13 @@
-import * as cdk from "@aws-cdk/core";
-import * as acm from "@aws-cdk/aws-certificatemanager";
-import * as r53 from "@aws-cdk/aws-route53";
+import { aws_route53 as r53, aws_certificatemanager as acm, Stack, StackProps, App} from "aws-cdk-lib";
 
 /* Creates a hosted DNS zone for the reclaimers.net domain (which the account
  * must already own) and generates an SSL certificate that our services can use.
  */
-export class DomainStack extends cdk.Stack {
+export class DomainStack extends Stack {
   readonly dnsZone: r53.PublicHostedZone;
   readonly cert: acm.Certificate;
 
-  constructor(app: cdk.App, id: string, stackProps: cdk.StackProps) {
+  constructor(app: App, id: string, stackProps: StackProps) {
     super(app, id, stackProps);
 
     this.dnsZone = new r53.PublicHostedZone(this, "ReclaimersZone", {

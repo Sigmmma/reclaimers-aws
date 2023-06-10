@@ -1,19 +1,14 @@
-import * as cdk from "@aws-cdk/core";
-import * as cfo from "@aws-cdk/aws-cloudfront-origins";
-import * as acm from "@aws-cdk/aws-certificatemanager";
-import * as iam from "@aws-cdk/aws-iam";
-import * as cf from "@aws-cdk/aws-cloudfront";
-import * as cb from "@aws-cdk/aws-codebuild";
-import {BasicBucket} from "../constructs/bucket";
+import { aws_codebuild as cb, aws_cloudfront as cf, aws_iam as iam, aws_certificatemanager as acm, aws_cloudfront_origins as cfo, Stack, Duration, StackProps, App} from "aws-cdk-lib";
+import { BasicBucket } from "../constructs/bucket";
 
 const CACHE_TTL_MINUTES = 120;
 
 /* Implements the c20 wiki website, including its automated build from source.
  */
-export class WikiStack extends cdk.Stack {
+export class WikiStack extends Stack {
   readonly cdn: cf.Distribution;
 
-  constructor(app: cdk.App, id: string, cert: acm.Certificate, stackProps: cdk.StackProps) {
+  constructor(app: App, id: string, cert: acm.Certificate, stackProps: StackProps) {
     super(app, id, stackProps);
 
     //this S3 bucket stores the built version of the wiki
@@ -31,7 +26,7 @@ export class WikiStack extends cdk.Stack {
 
     const build = new cb.Project(this, "Build", {
       projectName: "wiki-build",
-      timeout: cdk.Duration.minutes(10),
+      timeout: Duration.minutes(10),
       environment: {
         buildImage: cb.LinuxBuildImage.STANDARD_5_0,
         computeType: cb.ComputeType.SMALL,
@@ -74,7 +69,7 @@ export class WikiStack extends cdk.Stack {
       defaultBehavior: {
         cachePolicy: new cf.CachePolicy(this, "Cache", {
           cachePolicyName: "c20-ttl-policy",
-          defaultTtl: cdk.Duration.minutes(CACHE_TTL_MINUTES)
+          defaultTtl: Duration.minutes(CACHE_TTL_MINUTES)
         }),
         viewerProtocolPolicy: cf.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         origin: new cfo.S3Origin(wikiBucket.bucket)

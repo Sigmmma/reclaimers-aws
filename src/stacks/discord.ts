@@ -1,16 +1,14 @@
-import * as cdk from "@aws-cdk/core";
-import * as apigw from "@aws-cdk/aws-apigateway";
-import * as acm from "@aws-cdk/aws-certificatemanager";
-import {InlineNodeLambda} from "../constructs/lambda";
+import { aws_apigateway as apigw, aws_certificatemanager as acm, Stack, StackProps, App} from "aws-cdk-lib";
+import { InlineNodeLambda } from "../constructs/lambda";
 
 /* Implements the discord.reclaimers.net redirect to the invite URL. This
  * stack implements the origin itself, but also requires a DNS entry from the
  * DnsStack.
  */
-export class DiscordRedirectStack extends cdk.Stack {
+export class DiscordRedirectStack extends Stack {
   readonly apiGateway: apigw.RestApi;
 
-  constructor(app: cdk.App, id: string, cert: acm.Certificate, stackProps: cdk.StackProps) {
+  constructor(app: App, id: string, cert: acm.Certificate, stackProps: StackProps) {
     super(app, id, stackProps);
 
     const discordRedirectLambda = new InlineNodeLambda(this, "Lambda", `

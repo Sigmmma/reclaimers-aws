@@ -1,11 +1,11 @@
-import * as cdk from "@aws-cdk/core";
-import {WikiStack} from "./wiki";
-import {FilesStack} from "./files";
-import {DnsStack} from "./dns";
-import {DiscordRedirectStack} from "./discord";
-import {DomainStack} from "./domain";
-import {ClusterStack} from "./cluster";
-import {NewsStack} from "./news";
+import { WikiStack } from "./wiki";
+import { FilesStack } from "./files";
+import { DnsStack } from "./dns";
+import { DiscordRedirectStack } from "./discord";
+import { DomainStack } from "./domain";
+import { ClusterStack } from "./cluster";
+import { NewsStack } from "./news";
+import { Stack, App } from "aws-cdk-lib";
 
 //stops us from accidentally deploying to the wrong account
 const STACK_PROPS = {
@@ -17,8 +17,8 @@ const STACK_PROPS = {
 
 /* Top-level stack which creates all child stacks and wires them together.
  */
-export default class MainStack extends cdk.Stack {
-  constructor(app: cdk.App, id: string) {
+export default class MainStack extends Stack {
+  constructor(app: App, id: string) {
     super(app, id, STACK_PROPS);
 
     //general low-level infrastructure

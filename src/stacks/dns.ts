@@ -1,8 +1,4 @@
-import * as cdk from "@aws-cdk/core";
-import * as r53 from "@aws-cdk/aws-route53";
-import * as r53t from "@aws-cdk/aws-route53-targets";
-import * as cf from "@aws-cdk/aws-cloudfront";
-import * as apigw from "@aws-cdk/aws-apigateway";
+import { aws_route53 as r53, aws_route53_targets as r53t, aws_cloudfront as cf, aws_apigateway as apigw, Stack, StackProps, App, Duration} from "aws-cdk-lib";
 
 const GAMENIGHT_SERVERS = {
   //SlowBullet's CE3/Reclaimers server
@@ -25,8 +21,8 @@ export interface DnsStackProps {
  * This allows us to have @reclaimers.net emails, and various subdomains
  * with services.
  */
-export class DnsStack extends cdk.Stack {
-  constructor(app: cdk.App, id: string, props: DnsStackProps, stackProps: cdk.StackProps) {
+export class DnsStack extends Stack {
+  constructor(app: App, id: string, props: DnsStackProps, stackProps: StackProps) {
     super(app, id, stackProps);
 
     /* CDK seems to have a bug in it where if you just reference a
@@ -34,20 +30,20 @@ export class DnsStack extends cdk.Stack {
      * this one then it will be missing some internal zone mapping info.
      * We can directly inject CloudFormation template here as a workaround.
      */
-    new cdk.CfnInclude(this, "CloudFrontHack", {
-      template: {
-        Mappings: {
-          AWSCloudFrontPartitionHostedZoneIdMap: {
-            "aws": {zoneId: "Z2FDTNDATAQYW2"},
-            "aws-cn": {zoneId: "Z3RFFRIM2A3IF5"}
-          }
-        }
-      }
-    });
+    // new CfnInclude(this, "CloudFrontHack", {
+    //   template: {
+    //     Mappings: {
+    //       AWSCloudFrontPartitionHostedZoneIdMap: {
+    //         "aws": {zoneId: "Z2FDTNDATAQYW2"},
+    //         "aws-cn": {zoneId: "Z3RFFRIM2A3IF5"}
+    //       }
+    //     }
+    //   }
+    // });
 
     const baseDnsProps = {
       zone: props.dnsZone,
-      ttl: cdk.Duration.days(5),
+      ttl: Duration.days(5),
     };
 
     //these DNS records allow @reclaimers.net email to work
@@ -119,7 +115,7 @@ export class DnsStack extends cdk.Stack {
     Object.entries(GAMENIGHT_SERVERS).forEach(([name, ip]) => {
       new r53.ARecord(this, `Gamenight-${name}-Ipv4`, {
         ...baseDnsProps,
-        ttl: cdk.Duration.minutes(15),
+        ttl: Duration.minutes(15),
         recordName: name,
         target: r53.RecordTarget.fromIpAddresses(ip)
       });

@@ -1,5 +1,5 @@
-import * as cdk from "@aws-cdk/core";
-import * as s3 from "@aws-cdk/aws-s3";
+import { aws_s3 as s3 } from "aws-cdk-lib";
+import { Construct } from "constructs";
 
 export interface BasicBucketProps {
   readonly name: string;
@@ -10,10 +10,10 @@ export interface BasicBucketProps {
 /* This is an abstraction over and S3 bucket which requires less boilerplate
  * to create. Comes in either public or private types.
  */
-export class BasicBucket extends cdk.Construct {
+export class BasicBucket extends Construct {
   readonly bucket: s3.Bucket;
 
-  constructor(scope: cdk.Construct, id: string, props: BasicBucketProps) {
+  constructor(scope: Construct, id: string, props: BasicBucketProps) {
     super(scope, id);
     this.bucket = new s3.Bucket(this, "Bucket", {
       bucketName: props.name,

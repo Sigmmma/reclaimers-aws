@@ -16,7 +16,7 @@ export class DiscordRedirectStack extends Stack {
         return {
           statusCode: 301,
           headers: {
-            Location: "https://discord.gg/k6Q4JBp"
+            Location: "https://discord.gg/tVduNg9Ztb"
           }
         };
       };

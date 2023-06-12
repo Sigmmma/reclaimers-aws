@@ -1,4 +1,19 @@
-import { aws_codebuild as cb, aws_ecr as ecr, aws_ec2 as ec2, aws_ecs as ecs, aws_dynamodb as dynamo, aws_events_targets as eventsTargets, aws_events as events, Stack, Duration, RemovalPolicy, StackProps, App} from "aws-cdk-lib";
+import {
+  aws_codebuild as cb,
+  aws_ecr as ecr,
+  aws_ec2 as ec2,
+  aws_iam as iam,
+  aws_ecs as ecs,
+  aws_kms as kms,
+  aws_dynamodb as dynamo,
+  aws_events_targets as eventsTargets,
+  aws_events as events,
+  Stack,
+  Duration,
+  RemovalPolicy,
+  StackProps,
+  App
+} from "aws-cdk-lib";
 
 const IMAGE_REPO_NAME = "reclaimers-news";
 const IMAGE_TAG = "latest";
@@ -8,7 +23,7 @@ const IMAGE_TAG = "latest";
  * on RSS feeds.
  */
 export class NewsStack extends Stack {
-  constructor(app: App, id: string, cluster: ecs.Cluster, stackProps: StackProps) {
+  constructor(app: App, id: string, cluster: ecs.Cluster, devs: iam.Group, stackProps: StackProps) {
     super(app, id, stackProps);
 
     //we need a table to store which RSS items have been sent to Discord already
@@ -32,6 +47,10 @@ export class NewsStack extends Stack {
       removalPolicy: RemovalPolicy.DESTROY
     });
 
+    const secretsKey = new kms.Key(this, "SecretsKey", {
+      alias: "news-secrets"
+    });
+
     //define the container which will run the news scan task
     const newsTaskDef = new ecs.FargateTaskDefinition(this, "NewsTask", {
       family: "news-task",
@@ -45,6 +64,12 @@ export class NewsStack extends Stack {
 
     //the container's role will be allowed to read/write the sent messages table
     newsSentTable.grantReadWriteData(newsTaskDef.taskRole);
+
+    //it should also be able to decrypt its secrets
+    secretsKey.grantDecrypt(newsTaskDef.taskRole);
+
+    //devs can act like the app
+    newsTaskDef.taskRole.grantAssumeRole(devs);
 
     //schedule our task to run every hour in the cluster
     new events.Rule(this, "Schedule", {

@@ -6,7 +6,6 @@ import { DomainStack } from "./domain";
 import { ClusterStack } from "./cluster";
 import { NewsStack } from "./news";
 import { Stack, App } from "aws-cdk-lib";
-import { DevsStack } from "./devs";
 
 //stops us from accidentally deploying to the wrong account
 const STACK_PROPS = {
@@ -25,10 +24,9 @@ export default class MainStack extends Stack {
     //general low-level infrastructure
     const domainStack = new DomainStack(app, "Domain2", STACK_PROPS);
     const clusterStack = new ClusterStack(app, "Cluster", STACK_PROPS);
-    const devsStack = new DevsStack(app, "Devs", STACK_PROPS);
 
     //services
-    const newsStack = new NewsStack(app, "News", clusterStack.cluster, devsStack.devs, STACK_PROPS);
+    const newsStack = new NewsStack(app, "News", clusterStack.cluster, STACK_PROPS);
     const wikiStack = new WikiStack(app, "Wiki", domainStack.cert, STACK_PROPS);
     const filesStack = new FilesStack(app, "Files", domainStack.cert, STACK_PROPS);
     const discordStack = new DiscordRedirectStack(app, "DiscordRedirect", domainStack.cert, STACK_PROPS);

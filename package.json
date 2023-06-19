@@ -5,6 +5,7 @@
   "private": true,
   "dependencies": {
     "aws-cdk-lib": "^2.83.0",
+    "cdk": "^2.84.0",
     "constructs": "^10.2.47",
     "typescript": "^3.9.10"
   },

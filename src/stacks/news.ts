@@ -23,8 +23,28 @@ const IMAGE_TAG = "latest";
  * on RSS feeds.
  */
 export class NewsStack extends Stack {
-  constructor(app: App, id: string, cluster: ecs.Cluster, devs: iam.Group, stackProps: StackProps) {
+  constructor(app: App, id: string, cluster: ecs.Cluster, stackProps: StackProps) {
     super(app, id, stackProps);
+
+    //we need a place to store the built container image
+    const imageRepo = new ecr.Repository(this, "ImageRepo", {
+      repositoryName: IMAGE_REPO_NAME,
+      removalPolicy: RemovalPolicy.DESTROY
+    });
+
+    //user for local development
+    const devUser = new iam.User(this, "DevUser", {
+      userName: "dev-news",
+    });
+
+    const taskRole = new iam.Role(this, "TaskRole", {
+      assumedBy: new iam.CompositePrincipal(
+        devUser,
+        new iam.ServicePrincipal("ecs-tasks.amazonaws.com"),
+      ),
+      roleName: "news-task",
+    });
+    taskRole.grantAssumeRole(devUser);
 
     //we need a table to store which RSS items have been sent to Discord already
     const newsSentTable = new dynamo.Table(this, "NewsSentMessages", {
@@ -40,36 +60,25 @@ export class NewsStack extends Stack {
       billingMode: dynamo.BillingMode.PAY_PER_REQUEST,
       removalPolicy: RemovalPolicy.RETAIN,
     });
+    newsSentTable.grantReadWriteData(taskRole);
 
-    //we need a place to store the built container image
-    const imageRepo = new ecr.Repository(this, "ImageRepo", {
-      repositoryName: IMAGE_REPO_NAME,
-      removalPolicy: RemovalPolicy.DESTROY
-    });
-
+    //a KMS key for encrypted config
     const secretsKey = new kms.Key(this, "SecretsKey", {
-      alias: "news-secrets"
+      alias: "news-secrets",
     });
+    secretsKey.grantEncryptDecrypt(taskRole);
 
     //define the container which will run the news scan task
     const newsTaskDef = new ecs.FargateTaskDefinition(this, "NewsTask", {
       family: "news-task",
       cpu: 256, //smallest (.25 vCPU)
       memoryLimitMiB: 512, //smallest for this vCPU amount
+      taskRole: taskRole,
     });
     newsTaskDef.addContainer("ServiceContainer", {
       image: ecs.ContainerImage.fromEcrRepository(imageRepo, IMAGE_TAG),
       //we could override command, entryPoint, or environment here too
     });
-
-    //the container's role will be allowed to read/write the sent messages table
-    newsSentTable.grantReadWriteData(newsTaskDef.taskRole);
-
-    //it should also be able to decrypt its secrets
-    secretsKey.grantDecrypt(newsTaskDef.taskRole);
-
-    //devs can act like the app
-    newsTaskDef.taskRole.grantAssumeRole(devs);
 
     //schedule our task to run every hour in the cluster
     new events.Rule(this, "Schedule", {

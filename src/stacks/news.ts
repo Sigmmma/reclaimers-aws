@@ -101,7 +101,7 @@ export class NewsStack extends Stack {
       projectName: "news-build",
       timeout: Duration.minutes(10),
       environment: {
-        buildImage: cb.LinuxBuildImage.AMAZON_LINUX_2_3,
+        buildImage: cb.LinuxBuildImage.AMAZON_LINUX_2_4,
         computeType: cb.ComputeType.SMALL,
         environmentVariables: {
           AWS_DEFAULT_REGION: {value: "us-east-1"},

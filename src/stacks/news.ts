@@ -121,18 +121,6 @@ export class NewsStack extends Stack {
           cb.FilterGroup.inEventOf(cb.EventAction.PULL_REQUEST_MERGED).andHeadRefIs("refs/heads/master"),
         ],
       }),
-      secondarySources: [
-        cb.Source.gitHub({
-          identifier: "config", //this is used in the buildspec.yml as `CODEBUILD_SRC_DIR_config`
-          owner: "Sigmmma",
-          repo: "reclaimers-news-sources",
-          cloneDepth: 1,
-          webhookFilters: [
-            cb.FilterGroup.inEventOf(cb.EventAction.PUSH).andHeadRefIs("refs/heads/master"),
-            cb.FilterGroup.inEventOf(cb.EventAction.PULL_REQUEST_MERGED).andHeadRefIs("refs/heads/master"),
-          ],
-        })
-      ],
       badge: true,
     });
 

@@ -1,7 +1,7 @@
 import { aws_codebuild as cb, aws_cloudfront as cf, aws_iam as iam, aws_certificatemanager as acm, aws_cloudfront_origins as cfo, Stack, Duration, StackProps, App} from "aws-cdk-lib";
 import { BasicBucket } from "../constructs/bucket";
 
-const CACHE_TTL_MINUTES = 10;
+const CACHE_TTL_MINUTES = 120;
 
 /* Implements the c20 wiki website, including its automated build from source.
  */
